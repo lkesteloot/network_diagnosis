@@ -219,7 +219,7 @@ void checkResults(struct Test tests[], int count) {
                 test->mPid = 0;
 
                 // Update results.
-                char *c = status == 0 ? "✓" :
+                char *c = status == 0 ? "*" :
                     status == test->mFailureExitCode ? "X" : "?";
                 append(&test->mResults, c);
                 break;

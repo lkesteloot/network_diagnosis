@@ -10,6 +10,30 @@ in a tabular format so that at a glance I can see what's going wrong.
 The tests themselves are hard-coded in the C program. Feel free to modify them
 for your own use.
 
+# Building
+
+    % make
+
+# Running
+
+In this run the network was unplugged for the first 25 seconds. A dot means that
+the spawned program is still working, an "X" means that it returned an error and
+a star means that it returned success.
+
+    % ./network_diagnosis
+    Ping 192.168.1.1:      ....X....X....X....X....X**********
+    Ping 192.168.1.2:      ....X....X....X....X....X**********
+    Ping 75.75.75.75:      ....X....X....X....X....X**********
+    Ping 75.75.76.76:      ....X....X....X....X....X**********
+    Ping 8.8.8.8:          ....X....X....X....X....X**********
+    Ping 8.8.4.4:          ....X....X....X....X....X**********
+    Ping 209.123.234.146:  ....X....X....X....X....X**********
+    DNS 75.75.75.75:       .........X.........X.....**********
+    DNS 75.75.76.76:       .........X.........X.....**********
+    DNS 8.8.8.8:           .........X.........X.....**********
+    DNS 8.8.4.4:           .........X.........X.....**********
+    DNS 192.168.1.1:       .........X.........X.....**********
+
 # License
 
 Copyright 2017 Lawrence Kesteloot
