@@ -22,6 +22,7 @@
 #include <unistd.h>
 #include <string.h>
 #include <errno.h>
+#include <sys/wait.h>
 
 #define MAX_ARGS 128
 #define TERMINAL_WIDTH 75
@@ -247,8 +248,17 @@ void spawnTests(struct Test tests[], int count) {
         if (test->mPid == 0) {
             switch (test->mTestType) {
                 case PING: {
-                    spawnCheck(test, 2,
-                            "/sbin/ping", "-n", "-o", "-q", "-Q", "-t", "5", test->mAddress,
+                    spawnCheck(test,
+#if __APPLE__
+                            2,
+                            "/sbin/ping", "-n", "-c", "1", "-q", "-t", "5",
+#elif __linux__
+                            1,
+                            "/bin/ping", "-n", "-c", "1", "-q", "-W", "5",
+#else
+#  error "Unknown platform"
+#endif
+                            test->mAddress,
                             (char *) NULL);
                     break;
                 }
