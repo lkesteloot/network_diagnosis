@@ -91,7 +91,7 @@ void append(char **base, char *more) {
 
 // Return the "width" right part of the string.
 char *rightString(char *s, int width) {
-    int start = strlen(s) - width;
+    int start = (int) strlen(s) - width;
     return &s[start >= 0 ? start : 0];
 }
 
@@ -124,6 +124,9 @@ int getMaxWidth(struct Test tests[], int count) {
         }
     }
 
+    // Add colon and extra space.
+    maxWidth += 2;
+
     return maxWidth;
 }
 
@@ -134,19 +137,13 @@ void spawnCheck(struct Test *test, int failureExitCode, ...) {
 
     // Extract arguments.
     va_start(ap, failureExitCode);
-    int count = 0;
     for (int i = 0; i < MAX_ARGS; i++) {
         args[i] = va_arg(ap, char *);
         if (args[i] == NULL) {
-            count = i + 1;
             break;
         }
     }
     va_end(ap);
-
-    if (count == 0) {
-        return;
-    }
 
     // Spawn child.
     pid_t pid = fork();
@@ -184,6 +181,7 @@ void initializeTests(struct Test tests[], int count) {
 
 // See if any processes have finished and record their results.
 void checkResults(struct Test tests[], int count) {
+    // Array of booleans recording which test got a result.
     int *found = (int *) calloc(count, sizeof(int));
 
     while (1) {
@@ -278,13 +276,12 @@ void displayTests(struct Test tests[], int count, int maxWidth) {
     for (int i = 0; i < count; i++) {
         struct Test *test = &tests[i];
         char *label = getLabelForType(test->mTestType);
-        int width = strlen(label) + strlen(test->mAddress);
 
-        printf("%s %s:", label, test->mAddress);
+        int width = printf("%s %s: ", label, test->mAddress);
         for (int j = width; j < maxWidth; j++) {
-            printf(" ");
+            putchar(' ');
         }
-        printf(" %s\n", rightString(test->mResults, TERMINAL_WIDTH - maxWidth));
+        puts(rightString(test->mResults, TERMINAL_WIDTH - maxWidth));
     }
 }
 
