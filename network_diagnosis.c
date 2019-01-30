@@ -38,7 +38,7 @@ struct Test {
     // Type of test.
     enum TestType mTestType;
 
-    // Address (IP for PING, hostname for DNS).
+    // IP address of ping target or DNS server.
     char *mAddress;
 
     // PID of spawned task, or 0 if not currently spawned.
@@ -53,9 +53,11 @@ struct Test {
 
 // List of tests to perform.
 static struct Test TESTS[] = {
-    // Our own routers:
+    // Broadcast to see if anyone can reply.
+    { PING, "192.168.1.0" },
+
+    // Our own router:
     { PING, "192.168.1.1" },
-    { PING, "192.168.1.2" },
 
     // DNS from Comcast:
     { PING, "75.75.75.75" },
@@ -67,6 +69,9 @@ static struct Test TESTS[] = {
 
     // Plunk:
     { PING, "209.123.234.146" },
+
+    // Hitch:
+    { PING, "23.239.4.235" },
 
     // Various DNS lookups using explicit servers.
     { DNS, "75.75.75.75" },
@@ -204,7 +209,7 @@ void checkResults(struct Test tests[], int count) {
 
         // Sanity check.
         if (!WIFEXITED(status)) {
-            printf("Process did not terminate normally.");
+            printf("Process did not terminate normally.\n");
             exit(1);
         }
         status = WEXITSTATUS(status);
