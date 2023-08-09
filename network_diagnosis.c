@@ -88,13 +88,20 @@ static struct Test TESTS[] = {
 };
 static int TEST_COUNT = sizeof(TESTS)/sizeof(TESTS[0]);
 
+// Various characters we display to indicate status.
+static char const SUCCESS_CHAR = '*';
+static char const FAIL_CHAR = 'X';
+static char const UNKNOWN_CHAR = '?';
+static char const WAITING_CHAR = '.';
+
 // Append "more" to "*base", freeing and allocating in-place.
-void append(char **base, char *more) {
-    int newLength = strlen(*base) + strlen(more);
+void append(char **base, char more) {
+    int newLength = strlen(*base) + 1;
 
     char *newBase = (char *) malloc(newLength + 1);
     strcpy(newBase, *base);
-    strcat(newBase, more);
+    newBase[newLength - 1] = more;
+    newBase[newLength] = '\0';
 
     free(*base);
     *base = newBase;
@@ -229,8 +236,8 @@ void checkResults(struct Test tests[], int count) {
                 test->mPid = 0;
 
                 // Update results.
-                char *c = status == 0 ? "*" :
-                    status == test->mFailureExitCode ? "X" : "?";
+                char c = status == 0 ? SUCCESS_CHAR :
+                    status == test->mFailureExitCode ? FAIL_CHAR : UNKNOWN_CHAR;
                 append(&test->mResults, c);
                 break;
             }
@@ -242,7 +249,7 @@ void checkResults(struct Test tests[], int count) {
         struct Test *test = &tests[i];
 
         if (!found[i]) {
-            append(&test->mResults, ".");
+            append(&test->mResults, WAITING_CHAR);
         }
     }
 
@@ -282,6 +289,24 @@ void spawnTests(struct Test tests[], int count) {
     }
 }
 
+// Display a string, coloring the various characters we use.
+void printColoredString(char const *s) {
+    while (*s != '\0') {
+        if (*s == SUCCESS_CHAR) {
+            printf("\033[32m"); // Green
+        } else if (*s == FAIL_CHAR || *s == UNKNOWN_CHAR) {
+            printf("\033[31m"); // Red
+        } else if (*s == WAITING_CHAR) {
+            printf("\033[90m"); // Bright black (!)
+        } else {
+            printf("\033[0m"); // Reset
+        }
+        putchar(*s);
+        s++;
+    }
+    printf("\033[0m"); // Reset
+}
+
 // Display all tests and their results as a table.
 void displayTests(struct Test tests[], int count, int maxWidth) {
     for (int i = 0; i < count; i++) {
@@ -289,16 +314,15 @@ void displayTests(struct Test tests[], int count, int maxWidth) {
         char *label = getLabelForType(test->mTestType);
 
         int width = printf("%s %s: ", label, test->mAddress);
-        for (int j = width; j < maxWidth; j++) {
-            putchar(' ');
-        }
-        puts(rightString(test->mResults, TERMINAL_WIDTH - maxWidth));
+        printf("%*s", maxWidth - width, "");
+        printColoredString(rightString(test->mResults, TERMINAL_WIDTH - maxWidth));
+        putchar('\n');
     }
 }
 
 // Move up "count" rows.
 void backupCursor(int count) {
-    printf("%c[%dA", 27, count);
+    printf("\033[%dA", count);
 }
 
 int main() {
