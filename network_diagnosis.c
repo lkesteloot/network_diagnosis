@@ -63,6 +63,10 @@ static struct Test TESTS[] = {
     { PING, "75.75.75.75" },
     { PING, "75.75.76.76" },
 
+    // DNS from Sonic:
+    { PING, "50.0.1.1" },
+    { PING, "50.0.2.2" },
+
     // DNS from Google:
     { PING, "8.8.8.8" },
     { PING, "8.8.4.4" },
@@ -74,11 +78,13 @@ static struct Test TESTS[] = {
     { PING, "23.239.4.235" },
 
     // Various DNS lookups using explicit servers.
-    { DNS, "75.75.75.75" },
-    { DNS, "75.75.76.76" },
-    { DNS, "8.8.8.8" },
+    // { DNS, "75.75.75.75" }, // Comcast
+    // { DNS, "75.75.76.76" },
+    { DNS, "50.0.1.1" }, // Sonic
+    { DNS, "50.0.2.2" },
+    { DNS, "8.8.8.8" }, // Google
     { DNS, "8.8.4.4" },
-    { DNS, "192.168.1.1" },
+    { DNS, "192.168.1.1" }, // Home router
 };
 static int TEST_COUNT = sizeof(TESTS)/sizeof(TESTS[0]);
 
