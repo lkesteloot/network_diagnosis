@@ -72,7 +72,7 @@ static struct Test TESTS[] = {
     { PING, "8.8.4.4" },
 
     // Plunk:
-    { PING, "209.123.234.146" },
+    { PING, "172.104.31.219" },
 
     // Hitch:
     { PING, "23.239.4.235" },
