@@ -58,6 +58,7 @@ static struct Test TESTS[] = {
 
     // Our own router:
     { PING, "192.168.1.1" },
+    { PING, "192.168.50.1" },
 
     // DNS from Comcast:
     { PING, "75.75.75.75" },
