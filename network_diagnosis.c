@@ -51,14 +51,16 @@ struct Test {
     char *mResults;
 };
 
+// Third octet of LAN.
+#define LAN "50"
+
 // List of tests to perform.
 static struct Test TESTS[] = {
     // Broadcast to see if anyone can reply.
-    { PING, "192.168.1.0" },
+    { PING, "192.168." LAN ".0" },
 
     // Our own router:
-    { PING, "192.168.1.1" },
-    { PING, "192.168.50.1" },
+    { PING, "192.168." LAN ".1" },
 
     // DNS from Comcast:
     { PING, "75.75.75.75" },
@@ -75,9 +77,6 @@ static struct Test TESTS[] = {
     // Plunk:
     { PING, "172.104.31.219" },
 
-    // Hitch:
-    { PING, "23.239.4.235" },
-
     // Various DNS lookups using explicit servers.
     // { DNS, "75.75.75.75" }, // Comcast
     // { DNS, "75.75.76.76" },
@@ -85,7 +84,7 @@ static struct Test TESTS[] = {
     { DNS, "50.0.2.2" },
     { DNS, "8.8.8.8" }, // Google
     { DNS, "8.8.4.4" },
-    { DNS, "192.168.1.1" }, // Home router
+    { DNS, "192.168." LAN ".1" }, // Home router
 };
 static int TEST_COUNT = sizeof(TESTS)/sizeof(TESTS[0]);
 
